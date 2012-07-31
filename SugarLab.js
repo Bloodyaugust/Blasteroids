@@ -275,6 +275,10 @@ game.prototype.addEntity = function(entity)
 game.prototype.removeEntity = function(index)
 {
     this.entities.splice(index, 1);
+    
+    for (var i = 0; i < this.entities.length; i++) {
+        this.entities[i].entityIndex -= 1;
+    }
 }
 
 function vec2(x, y)
@@ -288,6 +292,14 @@ vec2.prototype.translate = function (translateBy)
 {
     this.x += translateBy.x;
     this.y += translateBy.y;
+}
+
+vec2.prototype.translateAlongRotation = function (translateBy, rotation)
+{
+    var dX = translateBy * Math.cos(rotation * Math.PI / 180);
+    var dY = translateBy * Math.sin(rotation * Math.PI / 180);
+    this.x += dX;
+    this.y += dY;
 }
 
 vec2.prototype.getRotated = function (origin, angle)
@@ -311,6 +323,15 @@ vec2.prototype.getTranslated = function (translateBy)
 {
     var x = translateBy.x + this.x;
     var y = translateBy.y + this.y;
+    return new vec2(x, y);
+}
+
+vec2.prototype.getTranslatedAlongRotation = function (translateBy, rotation)
+{
+    var dX = translateBy * Math.cos(rotation * Math.PI / 180);
+    var dY = translateBy * Math.sin(rotation * Math.PI / 180);
+    var x = dX + this.x;
+    var y = dY + this.y;
     return new vec2(x, y);
 }
 
@@ -433,6 +454,7 @@ function polygon(location, origin, structure)
     this.location = location.clone();
     this.rotation = 0;
     this.origin = origin.clone();
+    this.structureOrigin = origin.clone();
     this.color = "black";
     this.width = 2;
     this.structurevec2s = structure.clone();
@@ -444,10 +466,11 @@ polygon.prototype.update = function()
 {
     for (var i = 0; i < this.vec2s.length; i++)
     {
-        var newvec2 = this.structurevec2s[i].getRotated(this.origin, this.rotation);
+        var newvec2 = this.structurevec2s[i].getRotated(this.structureOrigin, this.rotation);
         newvec2.translate(this.location);
         this.vec2s[i] = newvec2.clone();
     }
+    this.origin = this.structureOrigin.getTranslated(this.location);
         
     this.lines = [];
     for (i = 0; i < this.vec2s.length; i++)
@@ -560,6 +583,18 @@ function drawText(text, location, color, sctx)
     sctx.font = '30px Sans-Serif';
     sctx.fillStyle = color;
     sctx.fillText(text, location.x, location.y);
+    sctx.restore();
+}
+
+function drawLine(line, color, sctx)
+{
+    sctx.save();
+    sctx.strokeStyle = color;
+    sctx.lineWidth = 2;
+    sctx.beginPath();
+    sctx.moveTo(line.p1.x + 0.5, line.p1.y + 0.5);
+    sctx.lineTo(line.p2.x + 0.5, line.p2.y + 0.5);
+    sctx.stroke();
     sctx.restore();
 }
 

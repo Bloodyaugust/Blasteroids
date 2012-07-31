@@ -1,8 +1,10 @@
-SCALE = 9; //feet per pixel
-SHIP_POWER_PER_IMPULSE = 0.03;
-SHIP_MAX_IMPULSE = 4;
-SHIP_TURN_SPEED = 100;
-SHIP_DAMPEN_RATE = 4;
+var SCALE = 9; //feet per pixel
+var SHIP_POWER_PER_IMPULSE = 0.03;
+var SHIP_MAX_IMPULSE = 4;
+var SHIP_TURN_SPEED = 100;
+var SHIP_DAMPEN_RATE = 4;
+var SHIP_PROJECTILE_SPEED = 1;
+var SHIP_RANGE_FINDER = 100;
 
 function start() {
     app = new game();
@@ -35,7 +37,7 @@ function update() {
     } 
     
     if (app.onKeyDown(32)) { //spacebar
-        app.addEntity(new projectile('player', ship.poly.location, ship.netForce.getTranslated(1, 1), 20000));
+        ship.fire();
     }
     
     ship.update();
@@ -50,13 +52,11 @@ function draw() {
     
     ship.draw();
     
-    //drawText("Mouse Button: " + app.mouseButton, new vec2(100, 200), 'green', app.sctx);
-    
-    //drawText("Mouse Location: " + "(" + app.mouseLocation.x + ", " + app.mouseLocation.y + ")", new vec2(100, 100), 'green', app.sctx);
-    
     drawText("FPS: " + app.fps, new vec2(app.screenSize.x - 250, 50), 'green', app.sctx);
     drawText("Impulse: " + ship.engineImpulse, new vec2(app.screenSize.x - 250, 80), 'green', app.sctx);
     drawText("Force: " + ship.netForce.x.toFixed(2) + ' ' + ship.netForce.y.toFixed(2), new vec2(app.screenSize.x - 250, 110), 'green', app.sctx);
+    drawText("Bullets: " + app.entities.length, new vec2(app.screenSize.x - 250, 140), 'green', app.sctx);
+    drawText("Delta Time: " + app.deltaTime, new vec2(app.screenSize.x - 250, 170), 'green', app.sctx);
 }
 
 function projectile(type, location, force, ttl) {
@@ -70,15 +70,16 @@ function projectile(type, location, force, ttl) {
     this.poly.color = 'orange';
     this.poly.update();
     this.netForce = force.clone();
-    this.deathTime = new Date().getTime() + ttl;
+    this.timeLeft = ttl;
 }
 
-projectile.prototype.update = function() {
+projectile.prototype.update = function () {
+    this.timeLeft -= app.deltaTime * 1000;
     this.poly.translate(this.netForce);
-    
-    if (app.lastFrameTime >= this.deathTime)
+
+    if (this.timeLeft <= 0)
         app.removeEntity(this.entityIndex);
-}
+};
 
 projectile.prototype.draw = function(sctx) {
     this.poly.draw(sctx);
@@ -89,7 +90,7 @@ function player() {
     new vec2(0, 0), new vec2(30, 15), new vec2(0, 30)
     ];
     this.poly = new polygon(new vec2(100, 100), new vec2(15, 15), this.structure);
-    this.poly.color = 'red';
+    this.poly.color = 'green';
     this.poly.rotation = 0;
     this.poly.update();
     this.engineImpulse = 0;
@@ -140,8 +141,8 @@ player.prototype.dampenInertia = function() {
 
 player.prototype.update = function() {
     var deltaSpeed = this.engineImpulse * SHIP_POWER_PER_IMPULSE * app.deltaTime;
-    var newX = SCALE * (deltaSpeed * (Math.cos(this.poly.rotation * Math.PI / 180)));
-    var newY = SCALE * (deltaSpeed * (Math.sin(this.poly.rotation * Math.PI / 180)));
+    var newX = (deltaSpeed * SCALE * (Math.cos(this.poly.rotation * Math.PI / 180)));
+    var newY = (deltaSpeed * SCALE * (Math.sin(this.poly.rotation * Math.PI / 180)));
     this.netForce.translate(new vec2(newX, newY));
     
     this.poly.translate(this.netForce);
@@ -149,4 +150,15 @@ player.prototype.update = function() {
 
 player.prototype.draw = function() {
     this.poly.draw(app.sctx);
+    drawLine(new line(this.poly.origin.getTranslatedAlongRotation(12, this.poly.rotation), this.poly.origin.getTranslatedAlongRotation(SHIP_RANGE_FINDER, this.poly.rotation)), 'red', app.sctx);
+}
+
+player.prototype.fire = function() {
+    var directionalForceX = SCALE * SHIP_PROJECTILE_SPEED * (Math.cos(this.poly.rotation * Math.PI / 180));
+    var directionalForceY = SCALE * SHIP_PROJECTILE_SPEED * (Math.sin(this.poly.rotation * Math.PI / 180));
+    var newForce = this.netForce.getTranslated(new vec2(directionalForceX, directionalForceY));
+    
+    app.addEntity(new projectile('player', ship.poly.origin, newForce, 2000));
+    newForce = new vec2(-newForce.x / SHIP_DAMPEN_RATE, -newForce.y / SHIP_DAMPEN_RATE);
+    this.netForce.translate(newForce);
 }

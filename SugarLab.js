@@ -46,7 +46,7 @@ function game()
     this.sctx = this.canvas.getContext("2d");
     this.screenSize = new vec2(this.canvas.width, this.canvas.height);
     this.startTime = new Date().getTime();
-    this.lastFrameTime = 0;
+    this.lastFrameTime = new Date;
     this.deltaTime = 0;
     this.fps = 0;
     this.framesThisSecond = 0;
@@ -59,6 +59,7 @@ function game()
     this.mouseDownThisFrame = 0;
     this.mouseUpThisFrame = 0;
     this.browser = '';
+    this.entities = [];
     
     window.addEventListener("keydown", this.handleKeyDown.bind(this), false);
     window.addEventListener("keyup", this.handleKeyUp.bind(this), false);
@@ -139,6 +140,10 @@ game.prototype.update = function() {
     
     for (i = 0; i < this.keysDownLength.length; i++) {
         this.keysDownLength[i]++;
+    }
+    
+    for (i = 0; i < this.entities.length; i++) {
+        this.entities[i].update();
     }
 }
 
@@ -254,6 +259,24 @@ game.prototype.clearScreen = function (clearColor)
     this.sctx.restore();
 }
 
+game.prototype.drawEntities = function()
+{
+    for (var i = 0; i < this.entities.length; i++) {
+        this.entities[i].draw(this.sctx);
+    }
+}
+
+game.prototype.addEntity = function(entity)
+{
+    this.entities.push(entity);
+    entity.entityIndex = this.entities.lastIndex();
+}
+
+game.prototype.removeEntity = function(index)
+{
+    this.entities.splice(index, 1);
+}
+
 function vec2(x, y)
 {
     this.x = x;
@@ -282,6 +305,13 @@ vec2.prototype.getRotated = function (origin, angle)
     var finalY = rotatedY + origin.y;
     
     return new vec2(finalX, finalY);
+}
+
+vec2.prototype.getTranslated = function (translateBy)
+{
+    var x = translateBy.x + this.x;
+    var y = translateBy.y + this.y;
+    return new vec2(x, y);
 }
 
 vec2.prototype.distance = function (p2)

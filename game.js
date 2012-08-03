@@ -11,6 +11,9 @@ function start() {
     app.fullscreen();
     
     ship = new player();
+
+    awesomeSound = new sound('http://localhost/git/blasteroids/res/laser.mp3');
+    app.addSound(awesomeSound);
 }
 
 function update() {
@@ -38,6 +41,8 @@ function update() {
     
     if (app.onKeyDown(32)) { //spacebar
         ship.fire();
+        app.playSound(awesomeSound.audio.src);
+        console.log(app.sounds);
     }
     
     ship.update();

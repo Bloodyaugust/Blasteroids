@@ -1,4 +1,4 @@
-Object.prototype.clone = function() {
+Object.prototype.clone = function () {
     var newObj = (this instanceof Array) ? [] : {};
     for (var i in this) {
         if (i === 'clone') continue;
@@ -10,38 +10,37 @@ Object.prototype.clone = function() {
     return newObj;
 };
 
-Array.prototype.last = function() {
+Array.prototype.last = function () {
     return this[this.length - 1];
 }
-    
-Array.prototype.lastIndex = function() {
+
+Array.prototype.lastIndex = function () {
     return this.length - 1;
 }
 
-var toType = function(obj) {
+var toType = function (obj) {
     return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 }
 
 
-floatEquals = function(f1, f2) {
+floatEquals = function (f1, f2) {
     if (Math.abs(f1 - f2) < 0.00000001)
         return true;
     return false;
 }
 
-requestAnimFrame = (function() {
+requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-        window.setTimeout(callback, 1000/60);
-    };
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+            window.setTimeout(callback, 1000 / 60);
+        };
 })();
 
-function game()
-{
+function game() {
     this.canvas = document.getElementById('gameCanvas');
     this.sctx = this.canvas.getContext("2d");
     this.screenSize = new vec2(this.canvas.width, this.canvas.height);
@@ -58,118 +57,126 @@ function game()
     this.mouseButton = 3;
     this.mouseDownThisFrame = 0;
     this.mouseUpThisFrame = 0;
-    this.browser = '';
+    this.browserData = new browserData();
     this.entities = [];
-    
+    this.sounds = [];
+
     window.addEventListener("keydown", this.handleKeyDown.bind(this), false);
     window.addEventListener("keyup", this.handleKeyUp.bind(this), false);
     this.canvas.addEventListener("mousemove", this.handleMouseMove.bind(this), false);
     this.canvas.addEventListener("mousedown", this.handleMouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.handleMouseUp.bind(this), false);
-    
-    if(window.mozRequestAnimationFrame) {
-        this.browser = 'mozilla';
+
+    if (window.mozRequestAnimationFrame) {
+        this.browserData = new browserData('mozilla');
         window.mozRequestAnimationFrame(update);
     }
-    
-    else
-    if(window.webkitRequestAnimationFrame) {
-        this.browser = 'webkit';
+
+    else if (window.webkitRequestAnimationFrame) {
+        this.browserData = new browserData('webkit');
         window.webkitRequestAnimationFrame(update);
     }
-            
+
     else {
-        this.browser = 'ie';
-        window.setInterval(function() {
+        this.browserData = new browserData('ie');
+        window.setInterval(function () {
             update();
         }, 1);
     }
-    
+
+    var audio = new Audio();
+    this.browserData.oggSupport = audio.canPlayType('audio/ogg; codecs="vorbis"');
+    this.browserData.mp3Support = audio.canPlayType('audio/mpeg; codecs="mp3"');
+    this.browserData.wavSupport = audio.canPlayType('audio/wav; codecs="wav"');
+
     this.sctx.fillStyle = 'rgb(0, 0, 0)';
 }
 
-game.prototype.fullscreen = function() {
+game.prototype.fullscreen = function () {
     this.canvas.width = document.width;
     this.canvas.height = document.height;
     this.screenSize = new vec2(this.canvas.width, this.canvas.height);
 }
 
-game.prototype.loop = function() {
-    if (this.browser === 'mozilla') {
+game.prototype.loop = function () {
+    if (this.browserData.name === 'mozilla') {
         window.mozRequestAnimationFrame(update);
     }
-    
-    if (this.browser === 'webkit') {
+
+    if (this.browserData.name === 'webkit') {
         window.webkitRequestAnimationFrame(update);
     }
-    
-    if (this.browser === 'ie') {
-        
+
+    if (this.browserData.name === 'ie') {
+
     }
 }
 
-game.prototype.update = function() {
+game.prototype.update = function () {
     var now = new Date;
     this.deltaTime = (now - this.lastFrameTime) / 1000;
     this.lastFrameTime = now;
-    
+
     this.deltaBuffer.shift();
     this.deltaBuffer.push(this.deltaTime);
-    
+
     var avgDelta = 0;
     var dBufLength = this.deltaBuffer.length;
     for (var i = 0; i < dBufLength; i += 1) {
         avgDelta += this.deltaBuffer[i];
     }
     avgDelta = avgDelta / dBufLength;
-    
+
     this.framesThisSecond++;
     if (now - this.lastFrameAggregation >= 1000) {
         this.fps = this.framesThisSecond;
         this.framesThisSecond = 0;
         this.lastFrameAggregation = now;
     }
-    
+
     this.mouseDownThisFrame -= 1;
     this.mouseUpThisFrame -= 1;
-    
+
     if (this.mouseDownThisFrame < 0)
         this.mouseDownThisFrame = 0;
     if (this.mouseUpThisFrame < 0)
         this.mouseUpThisFrame = 0;
-    
+
     for (i = 0; i < this.keysDownLength.length; i++) {
         this.keysDownLength[i]++;
     }
-    
+
     for (i = 0; i < this.entities.length; i++) {
         this.entities[i].update();
     }
+
+    for (i = 0; i < this.sounds.length; i++) {
+        if (this.sounds[i].audio.played) {
+            this.sounds.splice(i, 1);
+            i--;
+        }
+    }
 }
 
-game.prototype.handleKeyDown = function (event)
-{
+game.prototype.handleKeyDown = function (event) {
     var keyCode = event.keyCode;
     var alreadyCaptured = false;
-	
-    for (var i = 0; i < this.keysDown.length; i++)
-    {
+
+    for (var i = 0; i < this.keysDown.length; i++) {
         if (this.keysDown[i] === keyCode) {
             alreadyCaptured = true;
         }
     }
-	
+
     if (!alreadyCaptured) {
         this.keysDownLength.push(0);
         this.keysDown.push(keyCode);
     }
 }
 
-game.prototype.handleKeyUp = function (event)
-{
+game.prototype.handleKeyUp = function (event) {
     var keyCode = event.keyCode;
-    for (var i = 0; i < this.keysDown.length; i++)
-    {
+    for (var i = 0; i < this.keysDown.length; i++) {
         if (this.keysDown[i] === keyCode) {
             this.keysDownLength.splice(i, 1);
             this.keysDown.splice(i, 1);
@@ -177,81 +184,70 @@ game.prototype.handleKeyUp = function (event)
     }
 }
 
-game.prototype.handleMouseMove = function (event)
-{
+game.prototype.handleMouseMove = function (event) {
     this.mouseLocation = new vec2(event.clientX - 7, event.clientY - 7); //Sevens account for mouse hotspot offset
 }
 
-game.prototype.handleMouseDown = function (event)
-{
+game.prototype.handleMouseDown = function (event) {
     this.mouseDownThisFrame += 2;
-    
+
     this.mouseButton = event.button;
 }
 
-game.prototype.handleMouseUp = function ()
-{
+game.prototype.handleMouseUp = function () {
     this.mouseDownThisFrame += 2;
-    
+
     this.mouseButton = 3;
 }
 
-game.prototype.isKeyDown = function (keyCode)
-{
-    for (var i = 0; i < this.keysDown.length; i++)
-    {
+game.prototype.isKeyDown = function (keyCode) {
+    for (var i = 0; i < this.keysDown.length; i++) {
         if (this.keysDown[i] === keyCode)
             return true;
     }
-	
+
     return false;
 }
 
-game.prototype.onKeyDown = function (keyCode)
-{
-    for (var i = 0; i < this.keysDown.length; i++)
-    {
+game.prototype.onKeyDown = function (keyCode) {
+    for (var i = 0; i < this.keysDown.length; i++) {
         if (this.keysDown[i] === keyCode)
             if (this.keysDownLength[i] === 1)
                 return true;
     }
-	
+
     return false;
 }
 
-game.prototype.isMouseDown = function (mouseButton)
-{
+game.prototype.isMouseDown = function (mouseButton) {
     if (this.mouseButton === 0 && mouseButton === 'left') {
         return true;
     }
-    
+
     if (this.mouseButton === 1 && mouseButton === 'middle') {
         return true;
     }
-    
+
     if (this.mouseButton === 2 && mouseButton === 'right') {
         return true;
     }
-    
+
     return false;
 }
 
-game.prototype.onMouseDown = function() 
-{
-    if (this.mouseDownThisFrame > 0) 
+game.prototype.onMouseDown = function () {
+    if (this.mouseDownThisFrame > 0)
         return true;
     return false;
 }
 
-game.prototype.onMouseUp = function() 
-{
-    if (this.mouseUpThisFrame > 0) 
+game.prototype.onMouseUp = function () {
+    if (this.mouseUpThisFrame > 0)
         return true;
     return false;
 }
 
-game.prototype.clearScreen = function (clearColor)
-{
+game.prototype.clearScreen = function (clearColor) {
     this.sctx.save();
     this.sctx.fillStyle = clearColor;
     this.sctx.rect(0, 0, this.screenSize.x, this.screenSize.x);
@@ -259,75 +255,104 @@ game.prototype.clearScreen = function (clearColor)
     this.sctx.restore();
 }
 
-game.prototype.drawEntities = function()
-{
+game.prototype.drawEntities = function () {
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.sctx);
     }
 }
 
-game.prototype.addEntity = function(entity)
-{
+game.prototype.addEntity = function (entity) {
     this.entities.push(entity);
     entity.entityIndex = this.entities.lastIndex();
 }
 
-game.prototype.removeEntity = function(index)
-{
+game.prototype.removeEntity = function (index) {
     this.entities.splice(index, 1);
-    
+
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].entityIndex -= 1;
     }
 }
 
-function vec2(x, y)
-{
+game.prototype.isSoundEnded = function (sound) {
+    return (sound.audio.currentTime === sound.audio.duration || sound.audio.currentTime === 0);
+}
+
+game.prototype.playSound = function (path) {
+    var nonPlayingSound = null;
+    for (var i = 0; i < this.sounds.length; i++) {
+        if (this.sounds[i].audio.src === path && this.isSoundEnded(this.sounds[i]))
+            nonPlayingSound = this.sounds[i];
+    }
+
+    if(nonPlayingSound === null) {
+        var newSound = new sound(path);
+        this.addSound(newSound);
+        nonPlayingSound = newSound;
+    }
+
+    nonPlayingSound.audio.play();
+}
+
+game.prototype.addSound = function (sound) {
+    this.sounds.push(sound);
+}
+
+game.prototype.getSounds = function (name) {
+    var sounds = [];
+    for (var i = 0; i < this.sounds.length; i++) {
+        if (this.sounds[i].name === name) {
+            sounds.push(this.sounds[i]);
+        }
+    }
+    return sounds;
+}
+
+function browserData(name) {
+    this.name = name;
+}
+
+function vec2(x, y) {
     this.x = x;
     this.y = y;
     this.pName = 'vec2';
 }
 
-vec2.prototype.translate = function (translateBy)
-{
+vec2.prototype.translate = function (translateBy) {
     this.x += translateBy.x;
     this.y += translateBy.y;
 }
 
-vec2.prototype.translateAlongRotation = function (translateBy, rotation)
-{
+vec2.prototype.translateAlongRotation = function (translateBy, rotation) {
     var dX = translateBy * Math.cos(rotation * Math.PI / 180);
     var dY = translateBy * Math.sin(rotation * Math.PI / 180);
     this.x += dX;
     this.y += dY;
 }
 
-vec2.prototype.getRotated = function (origin, angle)
-{
+vec2.prototype.getRotated = function (origin, angle) {
     var cos = Math.cos(angle * 0.0174532925);
     var sin = Math.sin(angle * 0.0174532925);
-        
+
     var newX = this.x - origin.x;
     var newY = this.y - origin.y;
-            
+
     var rotatedX = newX * cos - newY * sin;
     var rotatedY = newX * sin + newY * cos;
-        
+
     var finalX = rotatedX + origin.x;
     var finalY = rotatedY + origin.y;
-    
+
     return new vec2(finalX, finalY);
 }
 
-vec2.prototype.getTranslated = function (translateBy)
-{
+vec2.prototype.getTranslated = function (translateBy) {
     var x = translateBy.x + this.x;
     var y = translateBy.y + this.y;
     return new vec2(x, y);
 }
 
-vec2.prototype.getTranslatedAlongRotation = function (translateBy, rotation)
-{
+vec2.prototype.getTranslatedAlongRotation = function (translateBy, rotation) {
     var dX = translateBy * Math.cos(rotation * Math.PI / 180);
     var dY = translateBy * Math.sin(rotation * Math.PI / 180);
     var x = dX + this.x;
@@ -335,66 +360,59 @@ vec2.prototype.getTranslatedAlongRotation = function (translateBy, rotation)
     return new vec2(x, y);
 }
 
-vec2.prototype.distance = function (p2)
-{
+vec2.prototype.distance = function (p2) {
     return Math.sqrt(((p2.x - this.x) * (p2.x - this.x)) + ((p2.y - this.y) * (p2.y - this.y)));
 }
 
-vec2.prototype.equals = function (p2)
-{
+vec2.prototype.equals = function (p2) {
     if (this.x === p2.x && this.y === p2.y)
         return true;
     return false;
 }
 
-function line(p1, p2)
-{
+function line(p1, p2) {
     this.p1 = p1;
     this.p2 = p2;
 }
 
-line.prototype.intersects = function (L2) 
-{
+line.prototype.intersects = function (L2) {
     var d = (L2.p2.y - L2.p1.y) * (this.p2.x - this.p1.x) - (L2.p2.x - L2.p1.x) * (this.p2.y - this.p1.y);
-    
+
     if (d === 0)
         return false;
-    
+
     var n_a = (L2.p2.x - L2.p1.x) * (this.p1.y - L2.p1.y) - (L2.p2.y - L2.p1.y) * (this.p1.x - L2.p1.x);
 
     var n_b = (this.p2.x - this.p1.x) * (this.p1.y - L2.p1.y) - (this.p2.y - this.p1.y) * (this.p1.x - L2.p1.x);
-    
+
     var ua = n_a / d;
     var ub = n_b / d;
-    
-    if ((ua >= 0) && (ua <= 1) && (ub >= 0) && (ub <= 1))
-    {
+
+    if ((ua >= 0) && (ua <= 1) && (ub >= 0) && (ub <= 1)) {
         var x = this.p1.x + (ua * (this.p2.x - this.p1.x));
         var y = this.p1.y + (ua * (this.p2.y - this.p1.y));
         var intersect = new vec2(x, y);
         return intersect;
     }
-         
+
     return false;
 }
 
-function rectangle(location, size)
-{
+function rectangle(location, size) {
     this.location = location.clone();
     this.size = size.clone();
     this.color = 'black';
     this.vec2s = [
-    new vec2(location.x, location.y), new vec2(location.x + size.x, location.y), new vec2(location.x + size.x, location.y + size.y), new vec2(location.x, location.y + size.y)
+        new vec2(location.x, location.y), new vec2(location.x + size.x, location.y), new vec2(location.x + size.x, location.y + size.y), new vec2(location.x, location.y + size.y)
     ];
     this.lines = [
-    new line(this.vec2s[0], this.vec2s[1]), new line(this.vec2s[1], this.vec2s[2]), new line(this.vec2s[2], this.vec2s[3]), new line(this.vec2s[3], this.vec2s[0])
+        new line(this.vec2s[0], this.vec2s[1]), new line(this.vec2s[1], this.vec2s[2]), new line(this.vec2s[2], this.vec2s[3]), new line(this.vec2s[3], this.vec2s[0])
     ];
     this.origin = new vec2(this.location.x + this.size.x / 2, this.location.y + this.size.y / 2);
     this.pName = 'rectangle';
 }
 
-rectangle.prototype.draw = function (sctx)
-{
+rectangle.prototype.draw = function (sctx) {
     sctx.save();
     sctx.strokeStyle = this.color;
     sctx.lineWidth = 1;
@@ -408,49 +426,44 @@ rectangle.prototype.draw = function (sctx)
     sctx.restore();
 }
 
-rectangle.prototype.intersects = function (r2)
-{
+rectangle.prototype.intersects = function (r2) {
     if (this.location.x > r2.location.x + r2.size.x || this.location.x + this.size.x < r2.location.x || this.location.y > r2.location.y + r2.size.y || this.location.y + this.size.y < r2.location.y)
         return false;
     return true;
 }
 
-rectangle.prototype.transform = function (transform)
-{
+rectangle.prototype.transform = function (transform) {
     this.location.add(transform);
     this.vec2s = [
-    new vec2(this.location.x, this.location.y), new vec2(this.location.x + this.size.x, this.location.y), 
-    new vec2(this.location.x + this.size.x, this.location.y + this.size.y), new vec2(this.location.x, this.location.y + this.size.y)
+        new vec2(this.location.x, this.location.y), new vec2(this.location.x + this.size.x, this.location.y),
+        new vec2(this.location.x + this.size.x, this.location.y + this.size.y), new vec2(this.location.x, this.location.y + this.size.y)
     ];
     this.lines = [
-    new line(this.vec2s[0], this.vec2s[1]), new line(this.vec2s[1], this.vec2s[2]), new line(this.vec2s[2], this.vec2s[3]), new line(this.vec2s[3], this.vec2s[0])
+        new line(this.vec2s[0], this.vec2s[1]), new line(this.vec2s[1], this.vec2s[2]), new line(this.vec2s[2], this.vec2s[3]), new line(this.vec2s[3], this.vec2s[0])
     ];
 }
 
-rectangle.prototype.setLocation = function (location)
-{
+rectangle.prototype.setLocation = function (location) {
     this.location = location.clone();
     this.vec2s = [
-    new vec2(this.location.x, this.location.y), new vec2(this.location.x + this.size.x, this.location.y), 
-    new vec2(this.location.x + this.size.x, this.location.y + this.size.y), new vec2(this.location.x, this.location.y + this.size.y)
+        new vec2(this.location.x, this.location.y), new vec2(this.location.x + this.size.x, this.location.y),
+        new vec2(this.location.x + this.size.x, this.location.y + this.size.y), new vec2(this.location.x, this.location.y + this.size.y)
     ];
     this.lines = [
-    new line(this.vec2s[0], this.vec2s[1]), new line(this.vec2s[1], this.vec2s[2]), new line(this.vec2s[2], this.vec2s[3]), new line(this.vec2s[3], this.vec2s[0])
+        new line(this.vec2s[0], this.vec2s[1]), new line(this.vec2s[1], this.vec2s[2]), new line(this.vec2s[2], this.vec2s[3]), new line(this.vec2s[3], this.vec2s[0])
     ];
 }
 
-rectangle.prototype.equals = function (r2)
-{
+rectangle.prototype.equals = function (r2) {
     for (var i = 0; i < this.vec2s.length; i++) {
-        if (!this.vec2s[i].equals(r2.vec2s[i])) 
+        if (!this.vec2s[i].equals(r2.vec2s[i]))
             return false;
     }
-    
+
     return true;
 }
 
-function polygon(location, origin, structure)
-{
+function polygon(location, origin, structure) {
     this.location = location.clone();
     this.rotation = 0;
     this.origin = origin.clone();
@@ -458,44 +471,37 @@ function polygon(location, origin, structure)
     this.color = "black";
     this.width = 2;
     this.structurevec2s = structure.clone();
-    this.vec2s = this.structurevec2s.clone(); 
+    this.vec2s = this.structurevec2s.clone();
     this.update();
 }
 
-polygon.prototype.update = function()
-{
-    for (var i = 0; i < this.vec2s.length; i++)
-    {
+polygon.prototype.update = function () {
+    for (var i = 0; i < this.vec2s.length; i++) {
         var newvec2 = this.structurevec2s[i].getRotated(this.structureOrigin, this.rotation);
         newvec2.translate(this.location);
         this.vec2s[i] = newvec2.clone();
     }
     this.origin = this.structureOrigin.getTranslated(this.location);
-        
+
     this.lines = [];
-    for (i = 0; i < this.vec2s.length; i++)
-    {
-        if (i != this.vec2s.length - 1)
-        {
-            this.lines.push(new line(this.vec2s[i], this.vec2s[i+1]));
+    for (i = 0; i < this.vec2s.length; i++) {
+        if (i != this.vec2s.length - 1) {
+            this.lines.push(new line(this.vec2s[i], this.vec2s[i + 1]));
         }
-                
-        else 
-        {
-            this.lines.push (new line(this.vec2s[i], this.vec2s[0]));
+
+        else {
+            this.lines.push(new line(this.vec2s[i], this.vec2s[0]));
         }
     }
 }
 
-polygon.prototype.draw = function(sctx)
-{
+polygon.prototype.draw = function (sctx) {
     sctx.save();
     sctx.strokeStyle = this.color;
     sctx.lineWidth = this.width;
     sctx.beginPath();
     sctx.moveTo(this.vec2s[0].x, this.vec2s[0].y);
-    for (var i = 1; i < this.vec2s.length; i++)
-    {
+    for (var i = 1; i < this.vec2s.length; i++) {
         sctx.lineTo(this.vec2s[i].x, this.vec2s[i].y);
     }
     sctx.closePath();
@@ -503,82 +509,69 @@ polygon.prototype.draw = function(sctx)
     sctx.restore();
 }
 
-polygon.prototype.translate = function(translateBy)
-{
+polygon.prototype.translate = function (translateBy) {
     this.location.x += translateBy.x;
     this.location.y += translateBy.y;
-    
+
     this.update();
 }
 
-polygon.prototype.translateTo = function(translateTo)
-{
+polygon.prototype.translateTo = function (translateTo) {
     this.location = translateTo.clone();
-    
+
     this.update();
 }
 
-polygon.prototype.rotate = function(rotateBy)
-{
+polygon.prototype.rotate = function (rotateBy) {
     this.rotation += rotateBy;
-    
-    while(this.rotation > 360 || this.rotation < 0) {
-        if (this.rotation > 360)
-        {
+
+    while (this.rotation > 360 || this.rotation < 0) {
+        if (this.rotation > 360) {
             this.rotation -= 360;
         }
-	
-        if (this.rotation < 0)
-        {
+
+        if (this.rotation < 0) {
             this.rotation += 360;
         }
     }
-    
+
     this.update();
 }
 
-polygon.prototype.rotateTo = function(rotateTo)
-{
+polygon.prototype.rotateTo = function (rotateTo) {
     this.rotation = rotateTo;
-    
-    while(this.rotation > 360 || this.rotation < 0) {
-        if (this.rotation > 360)
-        {
+
+    while (this.rotation > 360 || this.rotation < 0) {
+        if (this.rotation > 360) {
             this.rotation -= 360;
         }
-	
-        if (this.rotation < 0)
-        {
+
+        if (this.rotation < 0) {
             this.rotation += 360;
         }
     }
-    
+
     this.update();
 }
 
-polygon.prototype.intersects = function(poly2)
-{
-    for (var i = 0; i < this.lines.length; i++)
-    {
-        for (i2 = 0; i2 < poly2.lines.length; i2++)
-        {
+polygon.prototype.intersects = function (poly2) {
+    for (var i = 0; i < this.lines.length; i++) {
+        for (i2 = 0; i2 < poly2.lines.length; i2++) {
             var doesIntersect = this.lines[i].intersects(poly2.lines[i2]);
-                    
+
             if (doesIntersect != false)
                 return doesIntersect;
         }
     }
-        
+
     return false;
 }
 
-function randomVec2()
-{
+function randomVec2() {
     return new vec2(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500));
 }
 
-function drawText(text, location, color, sctx)
-{
+function drawText(text, location, color, sctx) {
     sctx.save();
     sctx.font = '30px Sans-Serif';
     sctx.fillStyle = color;
@@ -586,8 +579,7 @@ function drawText(text, location, color, sctx)
     sctx.restore();
 }
 
-function drawLine(line, color, sctx)
-{
+function drawLine(line, color, sctx) {
     sctx.save();
     sctx.strokeStyle = color;
     sctx.lineWidth = 2;
@@ -598,18 +590,23 @@ function drawLine(line, color, sctx)
     sctx.restore();
 }
 
-function getLines(vec2s) 
-{
+function sound(path) {
+    this.audio = new Audio();
+    this.audio.setAttribute('src', path);
+    this.name = path.slice(0, path.lastIndexOf('.'));
+    this.name = this.name.substring(this.name.lastIndexOf('/') + 1);
+    this.audio.autoplay = false;
+}
+
+function getLines(vec2s) {
     var lines = [];
     for (var i = 0; i < vec2s.length; i++) {
-        if (i != vec2s.length - 1)
-        {
-            lines.push(new line(vec2s[i], vec2s[i+1]));
+        if (i != vec2s.length - 1) {
+            lines.push(new line(vec2s[i], vec2s[i + 1]));
         }
-                
-        else 
-        {
-            lines.push (new line(vec2s[i], vec2s[0]));
+
+        else {
+            lines.push(new line(vec2s[i], vec2s[0]));
         }
     }
     return lines;

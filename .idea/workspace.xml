@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="710327d8-0440-41f4-b5be-375ce9308615" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SugarLab.js" afterPath="$PROJECT_DIR$/SugarLab.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game.js" afterPath="$PROJECT_DIR$/game.js" />
-    </list>
+    <list default="true" id="710327d8-0440-41f4-b5be-375ce9308615" name="Default" comment="" />
     <ignored path="Blasteroids.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,16 +25,25 @@
       <file leaf-file-name="HitListItemView.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://C:/ERCPac/tomcat/webapps/ercpac/app/view/search/HitListItemView.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="58" selection-start="1445" selection-end="1445" vertical-scroll-proportion="0.0">
+            <state line="62" column="34" selection-start="1674" selection-end="1674" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SearchController.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TestView.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://C:/ERCPac/tomcat/webapps/ercpac/app/view/TestView.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1" column="28" selection-start="65" selection-end="65" vertical-scroll-proportion="0.01934016">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SearchController.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://C:/ERCPac/tomcat/webapps/ercpac/app/controller/SearchController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="382" column="75" selection-start="15680" selection-end="15680" vertical-scroll-proportion="0.4907621">
+            <state line="202" column="62" selection-start="8314" selection-end="8314" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -61,8 +65,9 @@
       <list>
         <option value="$PROJECT_DIR$/game.js" />
         <option value="$PROJECT_DIR$/SugarLab.js" />
-        <option value="C:/ERCPac/tomcat/webapps/ercpac/app/view/search/HitListItemView.js" />
         <option value="C:/ERCPac/tomcat/webapps/ercpac/app/controller/SearchController.js" />
+        <option value="C:/ERCPac/tomcat/webapps/ercpac/app/view/search/HitListItemView.js" />
+        <option value="C:/ERCPac/tomcat/webapps/ercpac/app/view/TestView.js" />
       </list>
     </option>
   </component>
@@ -275,16 +280,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ERCPac/tomcat/webapps/ercpac/app/view/search/HitListItemView.js">
+    <entry file="file://C:/ERCPac/src/main/webapp/app/controller/SearchController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="58" selection-start="1445" selection-end="1445" vertical-scroll-proportion="0.0">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/ERCPac/tomcat/webapps/ercpac/app/controller/SearchController.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="382" column="75" selection-start="15680" selection-end="15680" vertical-scroll-proportion="0.4907621">
+        <state line="202" column="62" selection-start="8314" selection-end="8314" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ERCPac/tomcat/webapps/ercpac/app/view/search/HitListItemView.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="34" selection-start="1674" selection-end="1674" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ERCPac/tomcat/webapps/ercpac/app/view/TestView.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="28" selection-start="65" selection-end="65" vertical-scroll-proportion="0.01934016">
           <folding />
         </state>
       </provider>

@@ -12,7 +12,7 @@ function start() {
     
     ship = new player();
 
-    awesomeSound = new sound('http://localhost/git/blasteroids/res/laser.mp3');
+    awesomeSound = new sound('res/laser.mp3');
     app.addSound(awesomeSound);
 }
 
@@ -41,6 +41,7 @@ function update() {
     
     if (app.onKeyDown(32)) { //spacebar
         ship.fire();
+        console.log(app.sounds);
         app.playSound(awesomeSound.audio.src);
         console.log(app.sounds);
     }

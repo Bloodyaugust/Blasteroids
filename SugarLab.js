@@ -370,6 +370,10 @@ vec2.prototype.equals = function (p2) {
     return false;
 }
 
+vec2.prototype.magnitude = function () {
+    return Math.sqrt((this.x * this.x) + (this.y * this.y));
+}
+
 function line(p1, p2) {
     this.p1 = p1;
     this.p2 = p2;

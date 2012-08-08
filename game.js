@@ -33,10 +33,20 @@ function update() {
     
     if (app.isKeyDown(37)) { //left arrow
         ship.poly.rotate(-SHIP_TURN_SPEED * app.deltaTime);
+        curMag = ship.netForce.magnitude();
+        ship.netForce = new vec2(0, 0);
+        newX = (curMag * (Math.cos(ship.poly.rotation * Math.PI / 180)));
+        newY = (curMag * (Math.sin(ship.poly.rotation * Math.PI / 180)));
+        ship.netForce.translate(new vec2(newX, newY));
     }
     
     if (app.isKeyDown(39)) { //right arrow
         ship.poly.rotate(SHIP_TURN_SPEED * app.deltaTime);
+        curMag = ship.netForce.magnitude();
+        ship.netForce = new vec2(0, 0);
+        newX = (curMag * (Math.cos(ship.poly.rotation * Math.PI / 180)));
+        newY = (curMag * (Math.sin(ship.poly.rotation * Math.PI / 180)));
+        ship.netForce.translate(new vec2(newX, newY));
     } 
     
     if (app.onKeyDown(32)) { //spacebar

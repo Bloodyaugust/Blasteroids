@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="710327d8-0440-41f4-b5be-375ce9308615" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SugarLab.js" afterPath="$PROJECT_DIR$/SugarLab.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game.js" afterPath="$PROJECT_DIR$/game.js" />
-    </list>
+    <list default="true" id="710327d8-0440-41f4-b5be-375ce9308615" name="Default" comment="" />
     <ignored path="Blasteroids.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,7 +25,7 @@
       <file leaf-file-name="SugarLab.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SugarLab.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="373" column="60" selection-start="10137" selection-end="10137" vertical-scroll-proportion="0.87030715">
+            <state line="373" column="60" selection-start="10137" selection-end="10137" vertical-scroll-proportion="0.01934016">
               <folding />
             </state>
           </provider>
@@ -124,8 +121,8 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.General" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="JavascriptDebugSession" factoryName="Local">
@@ -244,9 +241,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://C:/ERCPac/src/main/webapp/app/controller/SearchController.js">
@@ -273,14 +268,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/game.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="42" selection-start="1129" selection-end="1129" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="42" column="42" selection-start="1129" selection-end="1129" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/SugarLab.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="373" column="60" selection-start="10137" selection-end="10137" vertical-scroll-proportion="0.87030715">
+        <state line="373" column="60" selection-start="10137" selection-end="10137" vertical-scroll-proportion="0.01934016">
           <folding />
         </state>
       </provider>

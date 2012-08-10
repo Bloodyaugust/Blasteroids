@@ -33,20 +33,20 @@ function update() {
     
     if (app.isKeyDown(37)) { //left arrow
         ship.poly.rotate(-SHIP_TURN_SPEED * app.deltaTime);
-        curMag = ship.netForce.magnitude();
-        ship.netForce = new vec2(0, 0);
-        newX = (curMag * (Math.cos(ship.poly.rotation * Math.PI / 180)));
-        newY = (curMag * (Math.sin(ship.poly.rotation * Math.PI / 180)));
-        ship.netForce.translate(new vec2(newX, newY));
+        var curMag = ship.netForce.magnitude();
+        var directionVector = ship.poly.origin.getTranslatedAlongRotation(6, ship.poly.rotation - 60);
+        directionVector.translate(new vec2(-ship.poly.origin.x, -ship.poly.origin.y));
+        directionVector.normalize();
+        ship.netForce.translate(directionVector.getScaled(curMag * app.deltaTime));
     }
-    
+
     if (app.isKeyDown(39)) { //right arrow
         ship.poly.rotate(SHIP_TURN_SPEED * app.deltaTime);
         curMag = ship.netForce.magnitude();
-        ship.netForce = new vec2(0, 0);
-        newX = (curMag * (Math.cos(ship.poly.rotation * Math.PI / 180)));
-        newY = (curMag * (Math.sin(ship.poly.rotation * Math.PI / 180)));
-        ship.netForce.translate(new vec2(newX, newY));
+        directionVector = ship.poly.origin.getTranslatedAlongRotation(6, ship.poly.rotation + 60);
+        directionVector.translate(new vec2(-ship.poly.origin.x, -ship.poly.origin.y));
+        directionVector.normalize();
+        ship.netForce.translate(directionVector.getScaled(curMag * app.deltaTime));
     } 
     
     if (app.onKeyDown(32)) { //spacebar
@@ -73,6 +73,11 @@ function draw() {
     drawText("Force: " + ship.netForce.x.toFixed(2) + ' ' + ship.netForce.y.toFixed(2), new vec2(app.screenSize.x - 250, 110), 'green', app.sctx);
     drawText("Bullets: " + app.entities.length, new vec2(app.screenSize.x - 250, 140), 'green', app.sctx);
     drawText("Delta Time: " + app.deltaTime, new vec2(app.screenSize.x - 250, 170), 'green', app.sctx);
+    drawText("Rotation: " + ship.poly.rotation, new vec2(app.screenSize.x - 250, 200), 'green', app.sctx);
+    directionVector = ship.poly.origin.getTranslatedAlongRotation(6, ship.poly.rotation - 60);
+    directionVector.normalize();
+    drawText("X: " + directionVector.x.toFixed(2) + " Y: " + directionVector.y.toFixed(2), new vec2(app.screenSize.x - 250, 230), 'green', app.sctx);
+    drawText("Magnitude: " + directionVector.magnitude(), new vec2(app.screenSize.x - 250, 260), 'green', app.sctx);
 }
 
 function projectile(type, location, force, ttl) {
@@ -167,6 +172,10 @@ player.prototype.update = function() {
 player.prototype.draw = function() {
     this.poly.draw(app.sctx);
     drawLine(new line(this.poly.origin.getTranslatedAlongRotation(12, this.poly.rotation), this.poly.origin.getTranslatedAlongRotation(SHIP_RANGE_FINDER, this.poly.rotation)), 'red', app.sctx);
+    drawLine(new line(this.poly.origin.getTranslatedAlongRotation(6, this.poly.rotation - 60), this.poly.origin.getTranslatedAlongRotation(SHIP_RANGE_FINDER, this.poly.rotation - 60)), 'pink', app.sctx);
+    drawLine(new line(this.poly.origin.getTranslatedAlongRotation(6, this.poly.rotation + 60), this.poly.origin.getTranslatedAlongRotation(SHIP_RANGE_FINDER, this.poly.rotation + 60)), 'blue', app.sctx);
+    drawLine(new line(this.poly.origin.getTranslatedAlongRotation(6, this.poly.rotation - 60), this.poly.origin.getTranslatedAlongRotation(SHIP_RANGE_FINDER, this.poly.rotation - 90)), 'pink', app.sctx);
+    drawLine(new line(this.poly.origin.getTranslatedAlongRotation(6, this.poly.rotation + 60), this.poly.origin.getTranslatedAlongRotation(SHIP_RANGE_FINDER, this.poly.rotation + 90)), 'blue', app.sctx);
 }
 
 player.prototype.fire = function() {

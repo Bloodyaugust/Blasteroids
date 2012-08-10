@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="710327d8-0440-41f4-b5be-375ce9308615" name="Default" comment="" />
+    <list default="true" id="710327d8-0440-41f4-b5be-375ce9308615" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SugarLab.js" afterPath="$PROJECT_DIR$/SugarLab.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game.js" afterPath="$PROJECT_DIR$/game.js" />
+    </list>
     <ignored path="Blasteroids.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,19 +25,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SugarLab.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="SugarLab.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SugarLab.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="353" column="0" selection-start="9482" selection-end="9482" vertical-scroll-proportion="0.73492604">
+            <state line="328" column="18" selection-start="8772" selection-end="8772" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="game.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/game.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="42" selection-start="1129" selection-end="1129" vertical-scroll-proportion="0.0">
+            <state line="38" column="36" selection-start="1063" selection-end="1063" vertical-scroll-proportion="0.18771331">
               <folding />
             </state>
           </provider>
@@ -57,8 +60,8 @@
         <option value="C:/ERCPac/tomcat/webapps/ercpac/app/controller/SearchController.js" />
         <option value="C:/ERCPac/tomcat/webapps/ercpac/app/view/search/HitListItemView.js" />
         <option value="C:/ERCPac/tomcat/webapps/ercpac/app/view/TestView.js" />
-        <option value="$PROJECT_DIR$/game.js" />
         <option value="$PROJECT_DIR$/SugarLab.js" />
+        <option value="$PROJECT_DIR$/game.js" />
       </list>
     </option>
   </component>
@@ -170,6 +173,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.9977925" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -180,7 +184,6 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -266,14 +269,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/game.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="42" selection-start="1129" selection-end="1129" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SugarLab.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="353" column="0" selection-start="9482" selection-end="9482" vertical-scroll-proportion="0.73492604">
+        <state line="328" column="18" selection-start="8772" selection-end="8772" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="36" selection-start="1063" selection-end="1063" vertical-scroll-proportion="0.18771331">
           <folding />
         </state>
       </provider>

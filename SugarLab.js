@@ -323,6 +323,26 @@ vec2.prototype.translate = function (translateBy) {
     this.y += translateBy.y;
 }
 
+vec2.prototype.normalize = function () {
+    var mag = this.magnitude();
+    this.x /= mag;
+    this.y /= mag;
+}
+
+vec2.prototype.getNormal = function () {
+    var mag = this.magnitude();
+    return new vec2(this.x / mag, this.y / mag);
+}
+
+vec2.prototype.scale = function (scalar) {
+    this.x *= scalar;
+    this.y *= scalar;
+}
+
+vec2.prototype.getScaled = function (scalar) {
+    return new vec2(this.x * scalar, this.y * scalar);
+}
+
 vec2.prototype.translateAlongRotation = function (translateBy, rotation) {
     var dX = translateBy * Math.cos(rotation * Math.PI / 180);
     var dY = translateBy * Math.sin(rotation * Math.PI / 180);

@@ -635,3 +635,7 @@ function getLines(vec2s) {
     }
     return lines;
 }
+
+function getDirectionVector(rotation) {
+    return new vec2(Math.cos(rotation * Math.PI / 180), Math.sin(rotation * Math.PI / 180));
+}

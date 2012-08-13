@@ -57,7 +57,7 @@ function game() {
     this.mouseButton = 3;
     this.mouseDownThisFrame = 0;
     this.mouseUpThisFrame = 0;
-    this.browserData = new browserData();
+    this.browserData = null;
     this.entities = [];
     this.sounds = [];
 
@@ -66,6 +66,7 @@ function game() {
     this.canvas.addEventListener("mousemove", this.handleMouseMove.bind(this), false);
     this.canvas.addEventListener("mousedown", this.handleMouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.handleMouseUp.bind(this), false);
+    this.sctx.fillStyle = 'rgb(0, 0, 0)';
 
     if (window.mozRequestAnimationFrame) {
         this.browserData = new browserData('mozilla');
@@ -83,13 +84,16 @@ function game() {
             update();
         }, 1);
     }
-
+    
     var audio = new Audio();
     this.browserData.oggSupport = audio.canPlayType('audio/ogg; codecs="vorbis"');
     this.browserData.mp3Support = audio.canPlayType('audio/mpeg; codecs="mp3"');
     this.browserData.wavSupport = audio.canPlayType('audio/wav; codecs="wav"');
-
-    this.sctx.fillStyle = 'rgb(0, 0, 0)';
+    
+    this.browserData.webAudioAPISupport = false;
+    if(new webkitAudioContext()) {
+        this.browserData.webAudioAPISupport = true;
+    }
 }
 
 game.prototype.fullscreen = function () {
@@ -274,38 +278,23 @@ game.prototype.removeEntity = function (index) {
     }
 }
 
-game.prototype.isSoundEnded = function (sound) {
-    return (sound.audio.currentTime === sound.audio.duration || sound.audio.currentTime === 0);
-}
-
-game.prototype.playSound = function (path) {
-    var nonPlayingSound = null;
-    for (var i = 0; i < this.sounds.length; i++) {
-        if (this.sounds[i].audio.src === path && this.isSoundEnded(this.sounds[i]))
-            nonPlayingSound = this.sounds[i];
-    }
-
-    if(nonPlayingSound === null) {
-        var newSound = new sound(path);
-        this.addSound(newSound);
-        nonPlayingSound = newSound;
-    }
-
-    nonPlayingSound.audio.play();
+game.prototype.playSound = function (id) {
+    
 }
 
 game.prototype.addSound = function (sound) {
     this.sounds.push(sound);
+    sound.id = this.sounds.length - 1;
+    
+    if (this.browserData.webAudioAPISupport) {
+        
+    }
 }
 
-game.prototype.getSounds = function (name) {
-    var sounds = [];
-    for (var i = 0; i < this.sounds.length; i++) {
-        if (this.sounds[i].name === name) {
-            sounds.push(this.sounds[i]);
-        }
-    }
-    return sounds;
+function sound(path) {
+    this.path = path;
+    this.id = null;
+    this.isLoaded = false;
 }
 
 function browserData(name) {
@@ -612,14 +601,6 @@ function drawLine(line, color, sctx) {
     sctx.lineTo(line.p2.x + 0.5, line.p2.y + 0.5);
     sctx.stroke();
     sctx.restore();
-}
-
-function sound(path) {
-    this.audio = new Audio();
-    this.audio.setAttribute('src', path);
-    this.name = path.slice(0, path.lastIndexOf('.'));
-    this.name = this.name.substring(this.name.lastIndexOf('/') + 1);
-    this.audio.autoplay = false;
 }
 
 function getLines(vec2s) {
